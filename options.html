@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>ChromeLock Settings</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #202124;
+      margin: 0;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #dadce0;
+    }
+    
+    h1 {
+      color: #1a73e8;
+      font-size: 24px;
+      margin: 0;
+    }
+    
+    .container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    
+    h2 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #202124;
+    }
+    
+    .input-group {
+      margin-bottom: 15px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    
+    input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    
+    .toggle-label {
+      flex-grow: 1;
+      font-size: 14px;
+    }
+    
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 20px;
+    }
+    
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .3s;
+      border-radius: 20px;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    
+    input:checked + .slider {
+      background-color: #1a73e8;
+    }
+    
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+    
+    button {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    button:hover {
+      background-color: #1558b7;
+    }
+    
+    .error, .success {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .error {
+      background-color: #fce8e6;
+      color: #d93025;
+      display: none;
+    }
+    
+    .success {
+      background-color: #e6f4ea;
+      color: #137333;
+      display: none;
+    }
+    
+    .note {
+      font-size: 13px;
+      color: #5f6368;
+      margin-top: 8px;
+    }
+    
+    .setup-message {
+      text-align: center;
+      padding: 30px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>ChromeLock Settings</h1>
+  </header>
+  
+  <div id="not-initialized" class="container setup-message" style="display: none;">
+    <p>ChromeLock has not been set up yet.</p>
+    <p>Click on the extension icon in the toolbar to set up password protection.</p>
+  </div>
+  
+  <div id="settings-container" style="display: none;">
+    <div class="container">
+      <h2>General Settings</h2>
+      
+      <div class="toggle-container">
+        <span class="toggle-label">Enable password protection</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="enabled-toggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <p class="note">When enabled, Chrome will be locked every time it starts.</p>
+    </div>
+    
+    <div class="container">
+      <h2>Change Password</h2>
+      
+      <div class="input-group">
+        <label for="current-password">Current Password</label>
+        <input type="password" id="current-password" placeholder="Enter current password">
+      </div>
+      
+      <div class="input-group">
+        <label for="new-password">New Password</label>
+        <input type="password" id="new-password" placeholder="Enter new password">
+      </div>
+      
+      <div class="input-group">
+        <label for="confirm-password">Confirm New Password</label>
+        <input type="password" id="confirm-password" placeholder="Confirm new password">
+      </div>
+      
+      <button id="change-password">Change Password</button>
+      
+      <div id="password-error" class="error"></div>
+      <div id="password-success" class="success">Password changed successfully!</div>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html> 

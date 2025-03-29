@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chrome Lock</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #3c4043;
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+    
+    .lock-container {
+      background-color: #202124;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      width: 320px;
+    }
+    
+    .lock-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      color: #8ab4f8;
+    }
+    
+    h1 {
+      margin: 0 0 20px;
+      font-size: 24px;
+      font-weight: normal;
+    }
+    
+    .input-group {
+      margin-bottom: 20px;
+    }
+    
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #5f6368;
+      border-radius: 4px;
+      background-color: #3c4043;
+      color: white;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    
+    button {
+      background-color: #8ab4f8;
+      color: #202124;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      width: 100%;
+      transition: background-color 0.2s;
+    }
+    
+    button:hover {
+      background-color: #aecbfa;
+    }
+    
+    .error-message {
+      color: #f28b82;
+      margin-top: 16px;
+      display: none;
+    }
+    
+    .attempts-left {
+      color: #e8eaed;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="lock-container">
+    <div class="lock-icon">🔒</div>
+    <h1>Chrome is Locked</h1>
+    <p>Enter your password to continue</p>
+    
+    <div class="input-group">
+      <input type="password" id="password" placeholder="Enter password" autofocus>
+    </div>
+    
+    <button id="unlock">Unlock</button>
+    
+    <p id="error-message" class="error-message">Incorrect password. Please try again.</p>
+    <p id="attempts-left" class="attempts-left"></p>
+  </div>
+
+  <script src="lockscreen.js"></script>
+</body>
+</html> 
