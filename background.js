@@ -5,13 +5,13 @@ const MAX_ATTEMPTS = 3;
 // Check if extension is initialized and if password protection is enabled
 chrome.runtime.onStartup.addListener(async () => {
   const data = await chrome.storage.local.get(['initialized', 'enabled']);
-  
+
   // If extension is not initialized yet, don't show lock screen
   // The first-time setup will be handled by the popup
   if (!data.initialized) {
     return;
   }
-  
+
   // If password protection is enabled, show lock screen
   if (data.enabled !== false) {
     // Reset attempts on browser startup
@@ -53,16 +53,16 @@ function showLockScreen() {
 // Function to close the browser
 function closeBrowser() {
   // Try multiple methods to close Chrome
-  
+
   // First, we'll update our storage to indicate we're closing deliberately
   chrome.storage.local.set({ deliberateClose: true }, () => {
     // Method 1: Use chrome.tabs to open a special URL
     chrome.tabs.create({ url: "chrome://quit" });
-    
+
     // Method 2: Close all windows
     setTimeout(() => {
       chrome.windows.getAll({}, function(windows) {
-        for(let i = 0; i < windows.length; i++) {
+        for (let i = 0; i < windows.length; i++) {
           chrome.windows.remove(windows[i].id);
         }
       });
@@ -97,17 +97,17 @@ async function verifyPassword(password, sendResponse) {
   try {
     const data = await chrome.storage.local.get(['passwordHash', 'failedAttempts']);
     failedAttempts = data.failedAttempts || 0;
-    
+
     // Simple hash comparison for now - in a real extension you'd use more secure methods
     const inputHash = await hashPassword(password);
     const isMatch = data.passwordHash === inputHash;
-    
+
     if (isMatch) {
       await resetFailedAttempts();
-      
+
       // First send the success response
       sendResponse({ success: true });
-      
+
       // Then close the lock screen tab after a short delay
       // to ensure the response is processed first
       setTimeout(async () => {
@@ -122,12 +122,12 @@ async function verifyPassword(password, sendResponse) {
       }, 200);
     } else {
       const result = await logFailedAttempt();
-      sendResponse({ 
-        success: false, 
+      sendResponse({
+        success: false,
         attemptsLeft: result.attemptsLeft,
         shouldClose: result.attemptsLeft <= 0
       });
-      
+
       // If max attempts reached, close browser after a short delay
       if (result.attemptsLeft <= 0) {
         setTimeout(closeBrowser, 1500);
@@ -144,12 +144,12 @@ async function logFailedAttempt() {
   // Get current failed attempts from storage
   const data = await chrome.storage.local.get('failedAttempts');
   failedAttempts = (data.failedAttempts || 0) + 1;
-  
+
   // Update storage
   await chrome.storage.local.set({ failedAttempts });
-  
+
   const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
-  
+
   return { attemptsLeft };
 }
 

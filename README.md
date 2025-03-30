@@ -9,6 +9,7 @@ A Chrome extension that adds password protection to your browser. When enabled, 
 - Option to enable/disable password protection
 - Change password functionality
 - Auto-close Chrome after 3 failed password attempts
+- Vector-based SVG icons for crisp display at any resolution
 
 ## Installation
 
@@ -50,6 +51,11 @@ A Chrome extension that adds password protection to your browser. When enabled, 
 - This extension uses local storage with SHA-256 hashing for password storage
 - For best security, use a strong, unique password
 - The extension cannot protect against all security threats
+
+## Technical Notes
+
+- The extension uses SVG icons instead of PNG for better scaling and smaller file size
+- Designed to work with Chrome's Manifest V3
 
 ## License
 
