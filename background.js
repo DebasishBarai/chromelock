@@ -1,6 +1,7 @@
 // Track failed password attempts
 let failedAttempts = 0;
 const MAX_ATTEMPTS = 3;
+let isLocked = false;
 
 // Check if extension is initialized and if password protection is enabled
 chrome.runtime.onStartup.addListener(async () => {
@@ -15,6 +16,7 @@ chrome.runtime.onStartup.addListener(async () => {
   // If password protection is enabled, show lock screen
   if (data.enabled !== false) {
     // Reset attempts on browser startup
+    isLocked = true
     await resetFailedAttempts();
     showLockScreen();
   }
@@ -167,4 +169,23 @@ async function hashPassword(password) {
   const hashBuffer = await crypto.subtle.digest('SHA-256', data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-} 
+}
+
+chrome.tabs.onCreated.addListener(function(tab) {
+  if (!isLocked) return; // Exit if not locked
+  
+  // For tabs that already have a URL
+  if (tab.url && !tab.url.includes('lockscreen.html')) {
+    chrome.tabs.remove(tab.id);
+  } else {
+    // For tabs that don't have a URL yet or are loading
+    setTimeout(() => {
+      chrome.tabs.get(tab.id, function(updatedTab) {
+        // Check if tab still exists and now has a URL
+        if (updatedTab && updatedTab.url && !updatedTab.url.includes('lockscreen.html')) {
+          chrome.tabs.remove(tab.id);
+        }
+      });
+    }, 500); // Give the tab time to load
+  }
+});
