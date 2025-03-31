@@ -29,7 +29,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await chrome.storage.local.set({
       initialized: false,
       enabled: true,
-      failedAttempts: 0
+      failedAttempts: 0,
+      isLocked: false
     });
   } else if (details.reason === 'update' || details.reason === 'browser_update') {
     // Check if we need to show lock screen on update
@@ -48,7 +49,7 @@ function showLockScreen() {
     pinned: true
   }, (tab) => {
     // Store the lockscreen tab id so we can close it later
-    chrome.storage.local.set({ lockScreenTabId: tab.id });
+    chrome.storage.local.set({ lockScreenTabId: tab.id, isLocked: true });
   });
 }
 
@@ -171,9 +172,11 @@ async function hashPassword(password) {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-chrome.tabs.onCreated.addListener(function(tab) {
+chrome.tabs.onCreated.addListener(async function(tab) {
+  const data = await chrome.storage.local.get('isLocked');
+  isLocked = data.isLocked;
   if (!isLocked) return; // Exit if not locked
-  
+
   // For tabs that already have a URL
   if (tab.url && !tab.url.includes('lockscreen.html')) {
     chrome.tabs.remove(tab.id);
@@ -190,26 +193,19 @@ chrome.tabs.onCreated.addListener(function(tab) {
   }
 });
 
-
-chrome.tabs.onActivated.addListener(function(activeInfo) {
+chrome.webNavigation.onBeforeNavigate.addListener(async (details) => {
+  const data = await chrome.storage.local.get('isLocked');
+  isLocked = data.isLocked;
   if (!isLocked) return; // Exit if not locked
-  
-  // activeInfo contains tabId and windowId, but not the tab object itself
-  // We need to get the tab first
-  chrome.tabs.get(activeInfo.tabId, function(tab) {
-    // Now we have the tab object and can check its URL
-    if (tab.url && !tab.url.includes('lockscreen.html')) {
-      chrome.tabs.remove(activeInfo.tabId);
-    } else {
-      // For tabs that might be still loading
-      setTimeout(() => {
-        chrome.tabs.get(activeInfo.tabId, function(updatedTab) {
-          // Check if tab still exists and now has a URL
-          if (updatedTab && updatedTab.url && !updatedTab.url.includes('lockscreen.html')) {
-            chrome.tabs.remove(activeInfo.tabId);
-          }
-        });
-      }, 500); // Give the tab time to load
-    }
-  });
-});
+
+
+  const tabId = details.tabId;
+  const url = details.url;
+
+  // Check if the URL does NOT contain "lockscreen"
+  if (!url.includes("lockscreen.html")) {
+
+    // Redirect back to the current page
+    chrome.tabs.update(tabId, { url: "lockscreen.html" });  // Redirect to a safe page
+  }
+}, { url: [{ urlMatches: ".*" }] });

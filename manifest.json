@@ -6,7 +6,8 @@
   "permissions": [
     "storage",
     "tabs",
-    "windows"
+    "windows",
+    "webNavigation"
   ],
   "background": {
     "service_worker": "background.js"
@@ -25,4 +26,4 @@
     "48": "images/icon.png",
     "128": "images/icon.png"
   }
-} 
+}
