@@ -21,8 +21,8 @@
   },
   "options_page": "options.html",
   "icons": {
-    "16": "images/lock_icon.svg",
-    "48": "images/lock_icon.svg",
-    "128": "images/lock_icon.svg"
+    "16": "images/icon.png",
+    "48": "images/icon.png",
+    "128": "images/icon.png"
   }
 } 
