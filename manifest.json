@@ -1,5 +1,11 @@
 {
   "manifest_version": 3,
   "name": "ChromeLock",
-  "version": "1.0"
+  "version": "1.0",
+  "description": "Chrome extension to lock the screen",
+  "icons": {
+    "16": "images/icon.svg",
+    "48": "images/icon.svg",
+    "128": "images/icon.svg"
+  }
 }
