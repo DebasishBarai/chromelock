@@ -189,3 +189,27 @@ chrome.tabs.onCreated.addListener(function(tab) {
     }, 500); // Give the tab time to load
   }
 });
+
+
+chrome.tabs.onActivated.addListener(function(activeInfo) {
+  if (!isLocked) return; // Exit if not locked
+  
+  // activeInfo contains tabId and windowId, but not the tab object itself
+  // We need to get the tab first
+  chrome.tabs.get(activeInfo.tabId, function(tab) {
+    // Now we have the tab object and can check its URL
+    if (tab.url && !tab.url.includes('lockscreen.html')) {
+      chrome.tabs.remove(activeInfo.tabId);
+    } else {
+      // For tabs that might be still loading
+      setTimeout(() => {
+        chrome.tabs.get(activeInfo.tabId, function(updatedTab) {
+          // Check if tab still exists and now has a URL
+          if (updatedTab && updatedTab.url && !updatedTab.url.includes('lockscreen.html')) {
+            chrome.tabs.remove(activeInfo.tabId);
+          }
+        });
+      }, 500); // Give the tab time to load
+    }
+  });
+});
