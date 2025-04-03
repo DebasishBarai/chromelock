@@ -98,12 +98,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Verify password against stored hash
 async function verifyPassword(password, sendResponse) {
   try {
-    const data = await chrome.storage.local.get(['passwordHash', 'failedAttempts']);
+    const syncData = await chrome.storage.sync.get(['passwordHash']);
+    const data = await chrome.storage.local.get(['failedAttempts']);
     failedAttempts = data.failedAttempts || 0;
 
     // Simple hash comparison for now - in a real extension you'd use more secure methods
     const inputHash = await hashPassword(password);
-    const isMatch = data.passwordHash === inputHash;
+    const isMatch = syncData.passwordHash === inputHash;
 
     if (isMatch) {
       await resetFailedAttempts();
